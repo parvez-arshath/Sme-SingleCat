@@ -15,7 +15,7 @@ public class SmeDistributorLogin extends BaseClass {
 	@Given("User must be in the login page")
 	public void user_must_be_in_the_login_page() throws IOException {
 		launchBrowser("chrome");
-		launchUrl(loginData().getProperty("urlAIAW"));
+		launchUrl(loginData().getProperty("url"));
 		maximizeWindow();
 		impWait();
 	}
@@ -24,8 +24,8 @@ public class SmeDistributorLogin extends BaseClass {
 	public void user_enter_valid_emailId_and_password() throws InterruptedException, IOException {
 
 		d = new DistributorLoginPojo();
-		fillTextBox(d.getUserEmailDistributor(), loginData().getProperty("emailIdDistributorAIAW"));
-		fillTextBox(d.getUserPasswordDistributor(), loginData().getProperty("passwordDistributorAIAW"));
+		fillTextBox(d.getUserEmailDistributor(), loginData().getProperty("emailIdDistributor"));
+		fillTextBox(d.getUserPasswordDistributor(), loginData().getProperty("passwordDistributor"));
 	}
 
 	@When("User click login button")
@@ -38,7 +38,7 @@ public class SmeDistributorLogin extends BaseClass {
 		Thread.sleep(40000);
 		String pageUrl = getPageUrl();
 		System.out.println(pageUrl);
-		assertTrue(pageUrl.contains("aiaw/distributor"));
+		assertTrue(pageUrl.contains("dni/distributor"));
 	}
 
 }

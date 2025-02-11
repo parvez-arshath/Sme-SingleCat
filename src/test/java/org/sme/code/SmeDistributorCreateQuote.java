@@ -73,7 +73,7 @@ public class SmeDistributorCreateQuote extends BaseClass {
 
 	@When("User enter distributor commission")
 	public void user_enter_distributor_commission() {
-		fillTextBox(createQuoteElements.getDistributorCommisionTextBox(), "15");
+		fillTextBox(createQuoteElements.getDistributorCommisionTextBox(), "6");
 	}
 
 	@When("User enter sales agent")
@@ -126,7 +126,7 @@ public class SmeDistributorCreateQuote extends BaseClass {
 	@When("User should click and upload template")
 	public void user_should_click_and_upload_template() {
 		fillTextBox(createQuoteElements.getUploadTemplateId(),
-				"C:\\Users\\impelox-pc-048\\Desktop\\censuses sheet\\census_a_automation.xlsx");
+				"C:\\Users\\arsha\\OneDrive\\Desktop\\cencus_a_automation.xlsx");
 		clickButton(createQuoteElements.getWarningPopupCancelButton());
 	}
 
@@ -158,47 +158,58 @@ public class SmeDistributorCreateQuote extends BaseClass {
 		crn = createQuoteElements.getCustomerId().getText();
 		String benefitsAIAW = benefitsAIAW(crn);
 		System.out.println(benefitsAIAW);
-	
-		// base premium
-		String basePremiumAIAW = basePremiumAIAW(emirate, tpa, plan);
-		System.out.println(basePremiumAIAW);
-		fetchDataFromDatabase(calculatorData().getProperty("dbUrlTest"), calculatorData().getProperty("dbUsernameTest"),
-				calculatorData().getProperty("dbPasswordTest"), basePremiumAIAW,
-				calculatorData().getProperty("excelCalculatorFilePath"), 0);
 
-		// benefits
-		fetchDataFromDatabase(calculatorData().getProperty("dbUrlTest"), calculatorData().getProperty("dbUsernameTest"),
-				calculatorData().getProperty("dbPasswordTest"),
-				benefitsAIAW,
-				calculatorData().getProperty("excelCalculatorFilePath"), 1);
+		newExcelOverride(calculatorData().getProperty("dbUrlTest"), calculatorData().getProperty("dbUsernameTest"),
+				calculatorData().getProperty("dbPasswordTest"), basePremiumAIAW(emirate,tpa, plan),
+				benefitsAIAW, nationalityLoadingQueryAIAW(emirate, tpa),
+				industryLoadingQueryAIAW(emirate, tpa), previousInsurerLoadingQueryAIAW(emirate, tpa),
+				commissionAIAW(emirate, tpa, plan));
 
-		// nationality loadings
-		String nationalityLoadingQueryAIAW = nationalityLoadingQueryAIAW(emirate, tpa);
-		System.out.println(nationalityLoadingQueryAIAW);
-		fetchDataFromDatabase(calculatorData().getProperty("dbUrlTest"), calculatorData().getProperty("dbUsernameTest"),
-				calculatorData().getProperty("dbPasswordTest"), nationalityLoadingQueryAIAW,
-				calculatorData().getProperty("excelCalculatorFilePath"), 4);
-
-		// industry loading
-		String industryLoadingQueryAIAW = industryLoadingQueryAIAW(emirate, tpa);
-		System.out.println(industryLoadingQueryAIAW);
-		fetchDataFromDatabase(calculatorData().getProperty("dbUrlTest"), calculatorData().getProperty("dbUsernameTest"),
-				calculatorData().getProperty("dbPasswordTest"), industryLoadingQueryAIAW,
-				calculatorData().getProperty("excelCalculatorFilePath"), 5);
-
-		// previous insurer loading
-		String previousInsurerLoadingQueryAIAW = previousInsurerLoadingQueryAIAW(emirate, tpa);
-		System.out.println(previousInsurerLoadingQueryAIAW);
-		fetchDataFromDatabase(calculatorData().getProperty("dbUrlTest"), calculatorData().getProperty("dbUsernameTest"),
-				calculatorData().getProperty("dbPasswordTest"), previousInsurerLoadingQueryAIAW,
-				calculatorData().getProperty("excelCalculatorFilePath"), 6);
-
-		System.out.println(calculatorData().getProperty("queryAIAWCommission"));
-		// Commission
-		fetchDataFromDatabase(calculatorData().getProperty("dbUrlTest"), calculatorData().getProperty("dbUsernameTest"),
-				calculatorData().getProperty("dbPasswordTest"), calculatorData().getProperty("queryAIAWCommission"),
-				calculatorData().getProperty("excelCalculatorFilePath"), 9);
-
+		/*
+		 * // base premium String basePremiumAIAW = basePremiumAIAW(emirate, tpa, plan);
+		 * System.out.println(basePremiumAIAW);
+		 * fetchDataFromDatabase(calculatorData().getProperty("dbUrlTest"),
+		 * calculatorData().getProperty("dbUsernameTest"),
+		 * calculatorData().getProperty("dbPasswordTest"), basePremiumAIAW,
+		 * calculatorData().getProperty("excelCalculatorFilePath"), 0);
+		 * 
+		 * // benefits fetchDataFromDatabase(calculatorData().getProperty("dbUrlTest"),
+		 * calculatorData().getProperty("dbUsernameTest"),
+		 * calculatorData().getProperty("dbPasswordTest"), benefitsAIAW,
+		 * calculatorData().getProperty("excelCalculatorFilePath"), 1);
+		 * 
+		 * // nationality loadings String nationalityLoadingQueryAIAW =
+		 * nationalityLoadingQueryAIAW(emirate, tpa);
+		 * System.out.println(nationalityLoadingQueryAIAW);
+		 * fetchDataFromDatabase(calculatorData().getProperty("dbUrlTest"),
+		 * calculatorData().getProperty("dbUsernameTest"),
+		 * calculatorData().getProperty("dbPasswordTest"), nationalityLoadingQueryAIAW,
+		 * calculatorData().getProperty("excelCalculatorFilePath"), 4);
+		 * 
+		 * // industry loading String industryLoadingQueryAIAW =
+		 * industryLoadingQueryAIAW(emirate, tpa);
+		 * System.out.println(industryLoadingQueryAIAW);
+		 * fetchDataFromDatabase(calculatorData().getProperty("dbUrlTest"),
+		 * calculatorData().getProperty("dbUsernameTest"),
+		 * calculatorData().getProperty("dbPasswordTest"), industryLoadingQueryAIAW,
+		 * calculatorData().getProperty("excelCalculatorFilePath"), 5);
+		 * 
+		 * // previous insurer loading String previousInsurerLoadingQueryAIAW =
+		 * previousInsurerLoadingQueryAIAW(emirate, tpa);
+		 * System.out.println(previousInsurerLoadingQueryAIAW);
+		 * fetchDataFromDatabase(calculatorData().getProperty("dbUrlTest"),
+		 * calculatorData().getProperty("dbUsernameTest"),
+		 * calculatorData().getProperty("dbPasswordTest"),
+		 * previousInsurerLoadingQueryAIAW,
+		 * calculatorData().getProperty("excelCalculatorFilePath"), 6);
+		 * 
+		 * System.out.println(calculatorData().getProperty("queryAIAWCommission")); //
+		 * Commission fetchDataFromDatabase(calculatorData().getProperty("dbUrlTest"),
+		 * calculatorData().getProperty("dbUsernameTest"),
+		 * calculatorData().getProperty("dbPasswordTest"),
+		 * calculatorData().getProperty("queryAIAWCommission"),
+		 * calculatorData().getProperty("excelCalculatorFilePath"), 9);
+		 */
 		/*
 		 * // Census
 		 * toFetchCensusSheet("C:\\Users\\impelox-pc-048\\Desktop\\censuses sheet\\census_a_automation.xlsx"

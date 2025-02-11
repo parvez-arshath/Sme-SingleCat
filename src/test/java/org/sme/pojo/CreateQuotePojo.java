@@ -110,7 +110,7 @@ public class CreateQuotePojo extends BaseClass {
 	@FindBy(xpath = "//div[@id='toast-container']")
 	private WebElement qouteCreatedPopUpMessage;
 	
-	@FindBy(xpath = "//div[@class='row header ng-star-inserted']//div[contains(text(),'TEST')]")
+	@FindBy(xpath = "//div[@class='row header ng-star-inserted']//div[contains(text(),'Customer ID')]//following-sibling::div")
 	private WebElement customerId;
 	
 	public WebElement getCustomerId() {

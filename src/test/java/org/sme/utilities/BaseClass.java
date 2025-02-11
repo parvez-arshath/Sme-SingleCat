@@ -119,7 +119,7 @@ public class BaseClass {
 
 	public static Properties loginData() throws IOException {
 		FileReader reader = new FileReader(
-				"C:\\Users\\impelox-pc-048\\eclipse-workspace\\SmeSingleCategory\\target\\DatasForDistributor\\LoginData.properties");
+				System.getProperty("user.dir") + "\\target\\DatasForDistributor\\LoginData.properties");
 		Properties props = new Properties();
 		props.load(reader);
 		return props;
@@ -128,7 +128,7 @@ public class BaseClass {
 
 	public static Properties createQuoteData() throws IOException {
 		FileReader reader = new FileReader(
-				"C:\\Users\\impelox-pc-048\\eclipse-workspace\\SmeSingleCategory\\target\\DatasForDistributor\\createQuote.properties");
+				System.getProperty("user.dir") + "\\target\\DatasForDistributor\\createQuote.properties");
 		Properties props = new Properties();
 		props.load(reader);
 		return props;
@@ -173,7 +173,7 @@ public class BaseClass {
 
 	public static Properties calculatorData() throws IOException {
 		FileReader reader = new FileReader(
-				"C:\\Users\\impelox-pc-048\\eclipse-workspace\\SmeSingleCategory\\target\\DatasForDistributor\\CalculationData.properties");
+				System.getProperty("user.dir") + "\\target\\DatasForDistributor\\CalculationData.properties");
 		Properties props = new Properties();
 		props.load(reader);
 		return props;
@@ -184,9 +184,9 @@ public class BaseClass {
 	public static String basePremiumAIAW(String emirate, String tpa, String plan) throws Exception {
 
 		// Database connection details
-		String dbURL = "jdbc:mysql://aura-uat.cwfjz6cyloxy.me-south-1.rds.amazonaws.com:3306";
-		String dbUsername = "admin";
-		String dbPassword = "zFs4upwKvvpRbbXcKSTf8La3MP4ymd";
+		String dbURL = "jdbc:mysql://qa-database.cwfjz6cyloxy.me-south-1.rds.amazonaws.com:3306";
+		String dbUsername = "appuser";
+		String dbPassword = "appuseradmin";
 
 		// Variables to hold user inputs
 		String emirateName, tpaName, planName;
@@ -208,7 +208,7 @@ public class BaseClass {
 
 			// Step 1: Get Active Version ID
 			String activeVersionQuery = " WITH ActiveVersion AS (\r\n" + "                    SELECT pv.id\r\n"
-					+ "                    FROM 7003_group_medical_aiaw_transactions.product_versions pv\r\n"
+					+ "                    FROM 7002_group_medical_dni_transactions.product_versions pv\r\n"
 					+ "                    WHERE pv.status = 1 AND pv.effective_date <= CURDATE()\r\n"
 					+ "                    ORDER BY pv.effective_date DESC\r\n" + "                    LIMIT 1\r\n"
 					+ "                )\r\n" + "                SELECT id FROM ActiveVersion;";
@@ -217,25 +217,25 @@ public class BaseClass {
 			try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(activeVersionQuery)) {
 				if (rs.next()) {
 					activeVersionId = rs.getInt("id");
-					/* System.out.println(activeVersionId); */
+					 System.out.println(activeVersionId); 
 				}
 			}
 
 			// Step 2: Get Group ID based on Active Version
-			String groupQuery = "SELECT id FROM 7003_group_medical_aiaw_transactions.group WHERE status = 1 AND version_id = ?";
+			String groupQuery = "SELECT id FROM 7002_group_medical_dni_transactions.group WHERE status = 1 AND version_id = ?";
 			int groupId = 0;
 			try (PreparedStatement pstmt = connection.prepareStatement(groupQuery)) {
 				pstmt.setInt(1, activeVersionId);
 				try (ResultSet rs = pstmt.executeQuery()) {
 					if (rs.next()) {
 						groupId = rs.getInt("id");
-						/* System.out.println(groupId); */
+						 System.out.println(groupId); 
 					}
 				}
 			}
 
 			// Step 3: Get Emirate ID based on Group ID and Emirate Name
-			String emirateQuery = "SELECT id FROM 7003_group_medical_aiaw_transactions.emirate WHERE group_id = ? AND emirate_name LIKE ?";
+			String emirateQuery = "SELECT id FROM 7002_group_medical_dni_transactions.emirate WHERE group_id = ? AND emirate_name LIKE ?";
 			int emirateId = 0;
 			try (PreparedStatement pstmt = connection.prepareStatement(emirateQuery)) {
 				pstmt.setInt(1, groupId);
@@ -243,13 +243,13 @@ public class BaseClass {
 				try (ResultSet rs = pstmt.executeQuery()) {
 					if (rs.next()) {
 						emirateId = rs.getInt("id");
-						/* System.out.println(emirateId); */
+						 System.out.println(emirateId); 
 					}
 				}
 			}
 
 			// Step 4: Get TPA ID based on Group ID, Emirate ID, and TPA Name
-			String tpaQuery = "SELECT id FROM 7003_group_medical_aiaw_transactions.tpa WHERE group_id = ? AND emirate_id = ? AND tpa_name LIKE ?";
+			String tpaQuery = "SELECT id FROM 7002_group_medical_dni_transactions.tpa WHERE group_id = ? AND emirate_id = ? AND tpa_name LIKE ?";
 			int tpaId = 0;
 			try (PreparedStatement pstmt = connection.prepareStatement(tpaQuery)) {
 				pstmt.setInt(1, groupId);
@@ -258,13 +258,13 @@ public class BaseClass {
 				try (ResultSet rs = pstmt.executeQuery()) {
 					if (rs.next()) {
 						tpaId = rs.getInt("id");
-						/* System.out.println(tpaId); */
+						 System.out.println(tpaId); 
 					}
 				}
 			}
 
 			// Step 5: Get Plan ID based on TPA ID and Plan Name
-			String planQuery = "SELECT id FROM 7003_group_medical_aiaw_transactions.plan WHERE tpa_id = ? AND Plan_name LIKE ?";
+			String planQuery = "SELECT id FROM 7002_group_medical_dni_transactions.plan WHERE tpa_id = ? AND Plan_name LIKE ?";
 			int planId = 0;
 			try (PreparedStatement pstmt = connection.prepareStatement(planQuery)) {
 				pstmt.setInt(1, tpaId);
@@ -272,19 +272,19 @@ public class BaseClass {
 				try (ResultSet rs = pstmt.executeQuery()) {
 					if (rs.next()) {
 						planId = rs.getInt("id");
-						/* System.out.println(planId); */
+						 System.out.println(planId); 
 					}
 				}
 			}
 
 			// Step 6: Fetch Premium Details
-			String premiumQuery = "SELECT * FROM 7003_group_medical_aiaw_transactions.premium WHERE plan_id = ? AND status = 1";
+			String premiumQuery = "SELECT * FROM 7002_group_medical_dni_transactions.premium WHERE plan_id = ? AND status = 1";
 
 			String valueOf = String.valueOf(planId);
 
 			premiumQuery = premiumQuery.replace("?", valueOf);
 
-			/* System.out.println(premiumQuery); */
+			 System.out.println(premiumQuery); 
 
 			return premiumQuery;
 
@@ -477,12 +477,12 @@ public class BaseClass {
 
 	public static String benefitsAIAW(String clientReferenceNumber) {
 		// Database connection details
-		String dbURL = "jdbc:mysql://aura-uat.cwfjz6cyloxy.me-south-1.rds.amazonaws.com:3306";
-		String dbUsername = "admin";
-		String dbPassword = "zFs4upwKvvpRbbXcKSTf8La3MP4ymd";
+		String dbURL = "jdbc:mysql://qa-database.cwfjz6cyloxy.me-south-1.rds.amazonaws.com:3306";
+		String dbUsername = "appuser";
+		String dbPassword = "appuseradmin";
 
 		// Construct the query manually
-		String benefitsQuery = "SELECT * FROM 7003_group_medical_aiaw_transactions.benefits_table "
+		String benefitsQuery = "SELECT * FROM 7002_group_medical_dni_transactions.benefits_table "
 				+ "WHERE client_reference_number LIKE '%" + clientReferenceNumber.trim() + "%'";
 
 		try (Connection connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword)) {
@@ -498,9 +498,9 @@ public class BaseClass {
 
 		String nationalityLoadingsQuery = null;
 		// Database connection details
-		String dbURL = "jdbc:mysql://aura-uat.cwfjz6cyloxy.me-south-1.rds.amazonaws.com:3306";
-		String dbUsername = "admin";
-		String dbPassword = "zFs4upwKvvpRbbXcKSTf8La3MP4ymd";
+		String dbURL = "jdbc:mysql://qa-database.cwfjz6cyloxy.me-south-1.rds.amazonaws.com:3306";
+		String dbUsername = "appuser";
+		String dbPassword = "appuseradmin";
 
 		// Variables to hold user inputs
 		String emirateName, tpaName;
@@ -518,7 +518,7 @@ public class BaseClass {
 
 			// Step 1: Get Active Version ID
 			String activeVersionQuery = "WITH ActiveVersion AS (\r\n" + "		                SELECT pv.id\r\n"
-					+ "		                FROM 7003_group_medical_aiaw_transactions.product_versions pv\r\n"
+					+ "		                FROM 7002_group_medical_dni_transactions.product_versions pv\r\n"
 					+ "		                WHERE pv.status = 1 AND pv.effective_date <= CURDATE()\r\n"
 					+ "		                ORDER BY pv.effective_date DESC\r\n" + "		                LIMIT 1\r\n"
 					+ "		            )\r\n" + "		            SELECT id FROM ActiveVersion;";
@@ -531,7 +531,7 @@ public class BaseClass {
 			}
 
 			// Step 2: Get Group ID based on Active Version
-			String groupQuery = "SELECT id FROM 7003_group_medical_aiaw_transactions.group WHERE status = 1 AND version_id = ?";
+			String groupQuery = "SELECT id FROM 7002_group_medical_dni_transactions.group WHERE status = 1 AND version_id = ?";
 			int groupId = 0;
 			try (PreparedStatement pstmt = connection.prepareStatement(groupQuery)) {
 				pstmt.setInt(1, activeVersionId);
@@ -543,7 +543,7 @@ public class BaseClass {
 			}
 
 			// Step 3: Get Emirate ID based on Group ID and Emirate Name
-			String emirateQuery = "SELECT id FROM 7003_group_medical_aiaw_transactions.emirate WHERE group_id = ? AND emirate_name LIKE ?";
+			String emirateQuery = "SELECT id FROM 7002_group_medical_dni_transactions.emirate WHERE group_id = ? AND emirate_name LIKE ?";
 			int emirateId = 0;
 			try (PreparedStatement pstmt = connection.prepareStatement(emirateQuery)) {
 				pstmt.setInt(1, groupId);
@@ -557,7 +557,7 @@ public class BaseClass {
 
 			// Step 4: Get UW Rules Schema Name based on Group ID, Emirate ID, and TPA Name
 			String uwRulesQuery = " SELECT uw_rules_schema_name \r\n"
-					+ "		        FROM 7003_group_medical_aiaw_transactions.tpa \r\n"
+					+ "		        FROM 7002_group_medical_dni_transactions.tpa \r\n"
 					+ "		        WHERE group_id = ? AND emirate_id = ? AND tpa_name LIKE ?";
 
 			String uwRulesSchemaName = "";
@@ -581,7 +581,7 @@ public class BaseClass {
 						+ "ON n.nationality_id = gm.nationality_id " + "WHERE gm.version_id = " + activeVersionId + ";";
 
 				/* System.out.println("Updated Nationality Loadings Query:"); */
-				/* System.out.println(nationalityLoadingsQuery); */
+				 System.out.println(nationalityLoadingsQuery); 
 			} else {
 				System.out.println("No UW Rules Schema Name found.");
 			}
@@ -598,9 +598,9 @@ public class BaseClass {
 	// industry loading
 	public static String industryLoadingQueryAIAW(String emirate, String tpa) {
 		// Database connection details
-		String dbURL = "jdbc:mysql://aura-uat.cwfjz6cyloxy.me-south-1.rds.amazonaws.com:3306";
-		String dbUsername = "admin";
-		String dbPassword = "zFs4upwKvvpRbbXcKSTf8La3MP4ymd";
+		String dbURL = "jdbc:mysql://qa-database.cwfjz6cyloxy.me-south-1.rds.amazonaws.com:3306";
+		String dbUsername = "appuser";
+		String dbPassword = "appuseradmin";
 
 		// Variables to hold user inputs
 		String emirateName, tpaName;
@@ -619,7 +619,7 @@ public class BaseClass {
 
 			// Step 1: Get Active Version ID
 			String activeVersionQuery = "WITH ActiveVersion AS (" + "SELECT pv.id "
-					+ "FROM 7003_group_medical_aiaw_transactions.product_versions pv "
+					+ "FROM 7002_group_medical_dni_transactions.product_versions pv "
 					+ "WHERE pv.status = 1 AND pv.effective_date <= CURDATE() " + "ORDER BY pv.effective_date DESC "
 					+ "LIMIT 1" + ") " + "SELECT id FROM ActiveVersion;";
 
@@ -631,7 +631,7 @@ public class BaseClass {
 			}
 
 			// Step 2: Get Group ID based on Active Version
-			String groupQuery = "SELECT id FROM 7003_group_medical_aiaw_transactions.group WHERE status = 1 AND version_id = ?";
+			String groupQuery = "SELECT id FROM 7002_group_medical_dni_transactions.group WHERE status = 1 AND version_id = ?";
 			int groupId = 0;
 			try (PreparedStatement pstmt = connection.prepareStatement(groupQuery)) {
 				pstmt.setInt(1, activeVersionId);
@@ -643,7 +643,7 @@ public class BaseClass {
 			}
 
 			// Step 3: Get Emirate ID based on Group ID and Emirate Name
-			String emirateQuery = "SELECT id FROM 7003_group_medical_aiaw_transactions.emirate WHERE group_id = ? AND emirate_name LIKE ?";
+			String emirateQuery = "SELECT id FROM 7002_group_medical_dni_transactions.emirate WHERE group_id = ? AND emirate_name LIKE ?";
 			int emirateId = 0;
 			try (PreparedStatement pstmt = connection.prepareStatement(emirateQuery)) {
 				pstmt.setInt(1, groupId);
@@ -656,7 +656,7 @@ public class BaseClass {
 			}
 
 			// Step 4: Get UW Rules Schema Name based on Group ID, Emirate ID, and TPA Name
-			String uwRulesQuery = "SELECT uw_rules_schema_name " + "FROM 7003_group_medical_aiaw_transactions.tpa "
+			String uwRulesQuery = "SELECT uw_rules_schema_name " + "FROM 7002_group_medical_dni_transactions.tpa "
 					+ "WHERE group_id = ? AND emirate_id = ? AND tpa_name LIKE ?";
 
 			String uwRulesSchemaName = "";
@@ -693,9 +693,9 @@ public class BaseClass {
 
 	public static String previousInsurerLoadingQueryAIAW(String emirate, String tpa) {
 		// Database connection details
-		String dbURL = "jdbc:mysql://aura-uat.cwfjz6cyloxy.me-south-1.rds.amazonaws.com:3306";
-		String dbUsername = "admin";
-		String dbPassword = "zFs4upwKvvpRbbXcKSTf8La3MP4ymd";
+		String dbURL = "jdbc:mysql://qa-database.cwfjz6cyloxy.me-south-1.rds.amazonaws.com:3306";
+		String dbUsername = "appuser";
+		String dbPassword = "appuseradmin";
 
 		// Variables to hold user inputs
 		String emirateName, tpaName;
@@ -714,7 +714,7 @@ public class BaseClass {
 
 			// Step 1: Get Active Version ID
 			String activeVersionQuery = "WITH ActiveVersion AS (" + "SELECT pv.id "
-					+ "FROM 7003_group_medical_aiaw_transactions.product_versions pv "
+					+ "FROM 7002_group_medical_dni_transactions.product_versions pv "
 					+ "WHERE pv.status = 1 AND pv.effective_date <= CURDATE() " + "ORDER BY pv.effective_date DESC "
 					+ "LIMIT 1" + ") " + "SELECT id FROM ActiveVersion;";
 
@@ -726,7 +726,7 @@ public class BaseClass {
 			}
 
 			// Step 2: Get Group ID based on Active Version
-			String groupQuery = "SELECT id FROM 7003_group_medical_aiaw_transactions.group WHERE status = 1 AND version_id = ?";
+			String groupQuery = "SELECT id FROM 7002_group_medical_dni_transactions.group WHERE status = 1 AND version_id = ?";
 			int groupId = 0;
 			try (PreparedStatement pstmt = connection.prepareStatement(groupQuery)) {
 				pstmt.setInt(1, activeVersionId);
@@ -738,7 +738,7 @@ public class BaseClass {
 			}
 
 			// Step 3: Get Emirate ID based on Group ID and Emirate Name
-			String emirateQuery = "SELECT id FROM 7003_group_medical_aiaw_transactions.emirate WHERE group_id = ? AND emirate_name LIKE ?";
+			String emirateQuery = "SELECT id FROM 7002_group_medical_dni_transactions.emirate WHERE group_id = ? AND emirate_name LIKE ?";
 			int emirateId = 0;
 			try (PreparedStatement pstmt = connection.prepareStatement(emirateQuery)) {
 				pstmt.setInt(1, groupId);
@@ -751,7 +751,7 @@ public class BaseClass {
 			}
 
 			// Step 4: Get UW Rules Schema Name based on Group ID, Emirate ID, and TPA Name
-			String uwRulesQuery = "SELECT uw_rules_schema_name " + "FROM 7003_group_medical_aiaw_transactions.tpa "
+			String uwRulesQuery = "SELECT uw_rules_schema_name " + "FROM 7002_group_medical_dni_transactions.tpa "
 					+ "WHERE group_id = ? AND emirate_id = ? AND tpa_name LIKE ?";
 
 			String uwRulesSchemaName = "";
@@ -790,9 +790,9 @@ public class BaseClass {
 	public static String commissionAIAW(String emirate, String tpa, String plan) throws Exception {
 
 		// Database connection details
-		String dbURL = "jdbc:mysql://aura-uat.cwfjz6cyloxy.me-south-1.rds.amazonaws.com:3306";
-		String dbUsername = "admin";
-		String dbPassword = "zFs4upwKvvpRbbXcKSTf8La3MP4ymd";
+		String dbURL = "jdbc:mysql://qa-database.cwfjz6cyloxy.me-south-1.rds.amazonaws.com:3306";
+		String dbUsername = "appuser";
+		String dbPassword = "appuseradmin";
 
 		// Variables to hold user inputs
 		String emirateName, tpaName, planName;
@@ -813,7 +813,7 @@ public class BaseClass {
 
 			// Step 1: Get Active Version ID
 			String activeVersionQuery = " WITH ActiveVersion AS (\r\n" + "                    SELECT pv.id\r\n"
-					+ "                    FROM 7003_group_medical_aiaw_transactions.product_versions pv\r\n"
+					+ "                    FROM 7002_group_medical_dni_transactions.product_versions pv\r\n"
 					+ "                    WHERE pv.status = 1 AND pv.effective_date <= CURDATE()\r\n"
 					+ "                    ORDER BY pv.effective_date DESC\r\n" + "                    LIMIT 1\r\n"
 					+ "                )\r\n" + "                SELECT id FROM ActiveVersion;";
@@ -826,7 +826,7 @@ public class BaseClass {
 			}
 
 			// Step 2: Get Group ID based on Active Version
-			String groupQuery = "SELECT id FROM 7003_group_medical_aiaw_transactions.group WHERE status = 1 AND version_id = ?";
+			String groupQuery = "SELECT id FROM 7002_group_medical_dni_transactions.group WHERE status = 1 AND version_id = ?";
 			int groupId = 0;
 			try (PreparedStatement pstmt = connection.prepareStatement(groupQuery)) {
 				pstmt.setInt(1, activeVersionId);
@@ -838,7 +838,7 @@ public class BaseClass {
 			}
 
 			// Step 3: Get Emirate ID based on Group ID and Emirate Name
-			String emirateQuery = "SELECT id FROM 7003_group_medical_aiaw_transactions.emirate WHERE group_id = ? AND emirate_name LIKE ?";
+			String emirateQuery = "SELECT id FROM 7002_group_medical_dni_transactions.emirate WHERE group_id = ? AND emirate_name LIKE ?";
 			int emirateId = 0;
 			try (PreparedStatement pstmt = connection.prepareStatement(emirateQuery)) {
 				pstmt.setInt(1, groupId);
@@ -851,7 +851,7 @@ public class BaseClass {
 			}
 
 			// Step 4: Get TPA ID based on Group ID, Emirate ID, and TPA Name
-			String tpaQuery = "SELECT id FROM 7003_group_medical_aiaw_transactions.tpa WHERE group_id = ? AND emirate_id = ? AND tpa_name LIKE ?";
+			String tpaQuery = "SELECT id FROM 7002_group_medical_dni_transactions.tpa WHERE group_id = ? AND emirate_id = ? AND tpa_name LIKE ?";
 			int tpaId = 0;
 			try (PreparedStatement pstmt = connection.prepareStatement(tpaQuery)) {
 				pstmt.setInt(1, groupId);
@@ -865,7 +865,7 @@ public class BaseClass {
 			}
 
 			// Step 5: Get Plan ID based on TPA ID and Plan Name
-			String planQuery = "SELECT id FROM 7003_group_medical_aiaw_transactions.plan WHERE tpa_id = ? AND Plan_name LIKE ?";
+			String planQuery = "SELECT id FROM 7002_group_medical_dni_transactions.plan WHERE tpa_id = ? AND Plan_name LIKE ?";
 			int planId = 0;
 			try (PreparedStatement pstmt = connection.prepareStatement(planQuery)) {
 				pstmt.setInt(1, tpaId);
@@ -878,7 +878,7 @@ public class BaseClass {
 			}
 
 			// Step 6: Fetch Commission
-			String commissionQuery = "SELECT insurer_fee,tpa_fee,aura_commission,distributor_commission,member_type,total FROM 7003_group_medical_aiaw_transactions.ceding_commission where plan_id=?;";
+			String commissionQuery = "SELECT insurer_fee,tpa_fee,aura_commission,distributor_commission,member_type,total FROM 7002_group_medical_dni_transactions.ceding_commission where plan_id=?;";
 
 			String valueOf = String.valueOf(planId);
 
@@ -890,6 +890,135 @@ public class BaseClass {
 
 		}
 
+	}
+
+	public static void newExcelOverride(String dburl, String dbusername, String dbpassword, String basepremium,
+			String benefits, String nationality, String industry, String previousInsurer, String commission) {
+
+		// Database connection details
+		String dbURL = dburl;
+		String dbUsername = dbusername;
+		String dbPassword = dbpassword;
+
+		// Queries to execute
+		String[] queries = { basepremium, benefits, nationality, industry, previousInsurer, commission };
+
+		// Excel file path
+		String excelFilePath = System.getProperty("user.dir")
+				+ "\\target\\ExcelCalculatorForDistributor\\Master Piece  new.xlsx";
+
+		Connection connection = null;
+
+		try {
+			// Load MySQL JDBC Driver
+			Class.forName("com.mysql.cj.jdbc.Driver");
+
+			// Establish connection
+			connection = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
+
+			// Load the Excel workbook
+			FileInputStream fileInputStream = new FileInputStream(excelFilePath);
+			Workbook workbook = new XSSFWorkbook(fileInputStream);
+			Sheet sheet = workbook.getSheetAt(0);
+
+			// Remove all rows in the sheet
+			int rowCount = sheet.getPhysicalNumberOfRows();
+			for (int i = 0; i < rowCount; i++) {
+				Row row = sheet.getRow(i);
+				if (row != null) {
+					sheet.removeRow(row); // Removes the row from the sheet
+				}
+			}
+
+			int startColumn = 0; // Start writing at column A
+
+			// Execute each query and write results with column gaps
+			for (String query : queries) {
+				startColumn = writeQueryToSheet(connection, query, workbook, sheet, startColumn);
+				startColumn += 2; // Leave one empty column as a gap
+			}
+
+			// Recalculate formulas
+			workbook.setForceFormulaRecalculation(true);
+
+			// Save the workbook
+			try (FileOutputStream outputStream = new FileOutputStream(excelFilePath)) {
+				workbook.write(outputStream);
+			}
+
+			fileInputStream.close();
+			workbook.close();
+			System.out.println("Data successfully written to Excel sheet with column gaps.");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			// Close database connection
+			try {
+				if (connection != null) {
+					connection.close();
+					System.out.println("Database connection closed.");
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	private static int writeQueryToSheet(Connection connection, String query, Workbook workbook, Sheet sheet,
+			int startColumn) {
+		try (Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
+
+			ResultSetMetaData metaData = resultSet.getMetaData();
+			int columnCount = metaData.getColumnCount();
+			int rowCount = 0;
+
+			// Write headers in the first row
+			Row headerRow = sheet.getRow(rowCount);
+			if (headerRow == null) {
+				headerRow = sheet.createRow(rowCount);
+			}
+			for (int i = 0; i < columnCount; i++) {
+				Cell cell = headerRow.createCell(startColumn + i);
+				cell.setCellValue(metaData.getColumnName(i + 1));
+			}
+			rowCount++;
+
+			// Write data
+			while (resultSet.next()) {
+				Row row = sheet.getRow(rowCount);
+				if (row == null) {
+					row = sheet.createRow(rowCount);
+				}
+				for (int i = 0; i < columnCount; i++) {
+					Cell cell = row.createCell(startColumn + i);
+					Object value = resultSet.getObject(i + 1);
+
+					if (value instanceof String) {
+						cell.setCellValue((String) value);
+					} else if (value instanceof Number) {
+						cell.setCellValue(((Number) value).doubleValue());
+					} else if (value instanceof Boolean) {
+						cell.setCellValue((Boolean) value);
+					} else if (value instanceof Date) {
+						cell.setCellValue(value.toString());
+					} else {
+						cell.setCellValue(value != null ? value.toString() : "");
+					}
+				}
+				rowCount++;
+			}
+
+			System.out.println(
+					"Data from query written in columns " + (startColumn + 1) + " to " + (startColumn + columnCount));
+			return startColumn + columnCount;
+
+		} catch (SQLException e) {
+			System.out.println("Error executing query: " + e.getMessage());
+			e.printStackTrace();
+			return startColumn;
+		}
 	}
 
 }
